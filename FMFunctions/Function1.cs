@@ -21,6 +21,7 @@ namespace FMFunctions
                 .FirstOrDefault(q => string.Compare(q.Key, "name", true) == 0)
                 .Value;
 
+            
             int userId = 0;
             int? count = 0;
             if (name == null)
@@ -30,9 +31,9 @@ namespace FMFunctions
                 name = data?.CustomerCode;
                 userId = data?.UserId;
             }
-            using (Initialise init = new Initialise("Data source=DESKTOP-G220MHL\\SQLEXPRESS;Initial Catalog=TestTable; IntegratedSecurity = 'true' pooling='true';Max Pool Size=1000000"))
+            using (Initialise init = new Initialise("Server=DELL\\SR4D5Z2SEY$1;Database=FireBaseTest;Trusted_Connection=True;"))
             {
-                var testData = init.Connection.Query("Select * from TestTable");
+                var testData = init.Connection.Query("Select * from Messages");
                 count = testData?.Count();
             }
 
