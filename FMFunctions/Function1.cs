@@ -1,3 +1,4 @@
+using Dapper;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
@@ -21,6 +22,7 @@ namespace FMFunctions
                 .Value;
 
             int userId = 0;
+            int? count = 0;
             if (name == null)
             {
                 // Get request body
@@ -28,14 +30,15 @@ namespace FMFunctions
                 name = data?.CustomerCode;
                 userId = data?.UserId;
             }
-            using (Initialise init = new Initialise("Data source=DESKTOP-G220MHL\\SQLEXPRESS;Initial Catalog=Common; user ID=sa;Password=sq-i00842r$;pooling='true';Max Pool Size=1000000"))
+            using (Initialise init = new Initialise("Data source=DESKTOP-G220MHL\\SQLEXPRESS;Initial Catalog=TestTable; IntegratedSecurity = 'true' pooling='true';Max Pool Size=1000000"))
             {
-
+                var testData = init.Connection.Query("Select * from TestTable");
+                count = testData?.Count();
             }
 
                 return name == null
                     ? req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body")
-                    : req.CreateResponse(HttpStatusCode.OK, "Hello " + name + " user " + userId.ToString());
+                    : req.CreateResponse(HttpStatusCode.OK, "Hello " + name + " user " + userId.ToString() + " " + count.Value.ToString());
         }
     }
 }
